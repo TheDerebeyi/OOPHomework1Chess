@@ -8,81 +8,90 @@ namespace OOPHomework1Chess
         {
             Board myBoard = new Board();
             int counter = 0;
-            bool bcache;
             myBoard.PrintBoard();
-            Console.Write("Press ENTER to insert next piece...");
+            Console.Write("Press ENTER to insert the first piece...");
             Console.ReadKey();
             while (counter < 8)
             {
-                do { } while (!Board.InsertPiece(RandomInt(8), RandomInt(8)));
+                do { } while (!myBoard.InsertPiece(RandomInt(8), RandomInt(8)));
                 Console.Clear();
                 myBoard.PrintBoard();
-                Console.Write("Press ENTER to insert next piece...");
+                if (counter != 7)
+                {
+                    Console.Write((counter + 1) + "/" + (8) + ". Press ENTER to insert next piece...");
+                }
+                else
+                {
+                    Console.Write("All pieces are inserted, Press ENTER to terminate...");
+                }
                 Console.ReadKey();
                 counter++;
             }
         }
 
-        static int RandomInt(int MAX)
+        static int RandomInt(int max)
         {
             var random = new Random();
-            return random.Next(MAX);
+            return random.Next(max);
+        }
+    }
+
+    class Board
+    {
+        public Board()
+        {
+            ArrBoard = new int[8, 8];
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    ArrBoard[i, j] = 0;
+                }
+            }
         }
 
-        public class Board
+        private int[,] ArrBoard;
+
+        public void PrintBoard()
         {
-            public Board()
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    Console.Write(ArrBoard[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
+        public bool CheckAvailability(int row, int column)
+        {
+            if (ArrBoard[row, column] == 0)
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    for (int j = 0; j < 8; j++)
+                    if (ArrBoard[row, i] != 0 || ArrBoard[i, column] != 0)
                     {
-                        ArrBoard[i, j] = 0;
+                        return false;
                     }
                 }
+                return true;
             }
 
-            public static int[,] ArrBoard = new int[8,8];
+            return false;
+        }
 
-            public void PrintBoard()
+        public bool InsertPiece(int row, int column)
+        {
+            if (CheckAvailability(row, column))
             {
-                for (int i = 0; i < 8; i++)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        Console.Write(ArrBoard[i,j]);
-                    }
-                    Console.WriteLine();
-                }
+                ArrBoard[row, column] = 1;
+                return true;
             }
 
-            public static bool CheckAvailability(int row, int column)
-            {
-                if (ArrBoard[row, column] == 0)
-                {
-                    for (int i = 0; i < 8; i++)
-                    {
-                        if (ArrBoard[row, i] != 0 || ArrBoard[i, column] != 0)
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-
-                return false;
-            }
-
-            public static bool InsertPiece(int row, int column)
-            {
-                if (CheckAvailability(row, column))
-                {
-                    ArrBoard[row, column] = 1;
-                    return true;
-                }
-
-                return false;
-            }
+            return false;
         }
     }
 }
